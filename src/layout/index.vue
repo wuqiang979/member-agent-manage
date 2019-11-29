@@ -5,7 +5,7 @@
     <div class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
-        <tagsView />
+        <!-- <tagsView /> -->
       </div>
       <app-main />
     </div>
@@ -21,7 +21,7 @@ export default {
   components: {
     Navbar,
     Sidebar,
-    TagsView,
+    // TagsView,
     AppMain
   },
   mixins: [ResizeMixin],
