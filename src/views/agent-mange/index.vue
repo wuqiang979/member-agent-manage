@@ -19,57 +19,25 @@
           </el-form-item>
         </el-form>
       </div>
-      <el-table
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="Loading"
-        border
-        fit
-        highlight-current-row
+      <Table
+        :table-data="list.slice(0,10)"
+        :table-columns="tableColumns"
+        :current-page="1"
+        :page-size="10"
+        :total-page="list.length"
       >
-        <el-table-column align="center" label="序号" width="95">
-          <template slot-scope="scope">
-            {{ scope.$index }}
-          </template>
-        </el-table-column>
-        <el-table-column label="手机号">
-          <template slot-scope="scope">
-            <!-- {{ scope.row.title }} -->
-            15928137520
-          </template>
-        </el-table-column>
-        <el-table-column label="代理类别" align="center">
-          <template slot-scope="scope">
-            <span>初级会员</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="粉丝数" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.pageviews }}
-          </template>
-        </el-table-column>
-        <el-table-column class-name="status-col" label="购物余额" align="center">
-          <template slot-scope="scope">
-            ￥ 500
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="可提现金额" width="200">
-          <template slot-scope="scope">
-            ￥ 500
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="话费" width="200">
-          <template slot-scope="scope">
-            ￥ 500
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="操作" width="200" fixed="right">
-          <template slot-scope="scope">
+        <el-table-column
+          slot="operate"
+          label="操作"
+          align="center"
+          width="200px"
+        >
+          <template slot-scope="{ row }">
             <el-button type="primary" size="mini" @click="showAgentInfo=true">查看</el-button>
             <el-button type="warning" size="mini" @click="showAgentInfo=true">编辑</el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </Table>
     </el-card>
     <el-dialog
       title="用户详情"
@@ -88,10 +56,12 @@
 <script>
 import { getList } from '@/api/table'
 import AgentInfo from './components/agent-info.vue'
+import Table from '@/components/Table'
 
 export default {
   components: {
-    AgentInfo
+    AgentInfo,
+    Table
   },
   filters: {
     statusFilter(status) {
@@ -111,17 +81,49 @@ export default {
         user: '',
         region: ''
       },
-      list: null
+      tableColumns: [{
+        type: 'index',
+        label: '序号',
+        width: '95px'
+      }, {
+        label: '手机号',
+        prop: 'author'
+      }, {
+        label: '代理类型',
+        prop: 'author'
+      }, {
+        label: '粉丝数',
+        prop: 'author'
+      }, {
+        label: '购物余额',
+        prop: 'author'
+      }, {
+        label: '可提现金额',
+        prop: 'author'
+      }, {
+        label: '话费',
+        prop: 'author'
+      }, {
+        slot: 'operate'
+      }],
+      list: []
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
+    handleCurrentPageChange(currentPage) {
+      this.fetchData()
+    },
+    hanlePageSizeChange(pageSize) {
+      this.fetchData()
+    },
     fetchData() {
       this.listLoading = true
       getList().then(response => {
         this.list = response.data.items
+        console.log(this.list)
         this.listLoading = false
       })
     },
